@@ -5,6 +5,8 @@ import axios from 'axios';
 export default function Home() {
   const [result, setResult] = useState('');
   const [city, setCity] = useState('london');
+  const [postresult, setPostresult] = useState('Ready to save');
+  const [summarylist, setSummarylist] = useState('');
 
   useEffect(() => {
     setResult("Let's get weather");
@@ -18,17 +20,7 @@ export default function Home() {
         var res = response.data;
         console.log(res);
 
-        // let items = res[0];
-
-        var renewedResult =
-          'Current temperature in ' +
-          res.name +
-          ' is ' +
-          res.main.temp +
-          '°C .................Conditions are currently ' +
-          res.weather[0].description;
-
-        setResult(renewedResult);
+        setResult(res);
       })
       .catch(function (error) {
         setResult('error!');
@@ -51,16 +43,54 @@ export default function Home() {
     console.log(city);
   };
 
+  const handleSave = (input) => {
+    // console.log(input);
+
+    axios
+      .post(`http://localhost:8080/summaries`, `"${result}"`)
+      .then(function (response) {
+        //res = JSON.parse(response.data);
+        console.log(response);
+
+        //let items = res.items[0];
+
+        setPostresult('Saved!!!');
+      })
+      .catch(function (error) {
+        setPostresult('error!');
+      });
+  };
+
+  const getList = () => {
+    axios
+      .get(`http://localhost:8080/summaries`)
+      .then(function (response) {
+        //res = JSON.parse(response.data);
+        console.log(response.data);
+
+        //let items = res.items[0];
+
+        setSummarylist(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        setSummarylist('error!');
+      });
+  };
+
   return (
     <div>
       <form onSubmit={handleSubmit}>
         <label>
-          City::::::::::
+          City==============>
           <input type="text" onChange={handleChange} />
         </label>
         <input type="submit" value="Submit" />
       </form>
-      <div>{result}</div>
+      <div>Result=============>{result}</div>
+      <button onClick={() => handleSave(result)}>Save Button Here</button>
+      <div>Save Result=========>{postresult}</div>
+      <button onClick={() => getList()}>Get list Button Here</button>
+      <div>{summarylist}</div>
     </div>
   );
 }
