@@ -6,7 +6,12 @@ export default function Home() {
   const [result, setResult] = useState('');
   const [city, setCity] = useState('london');
   const [postresult, setPostresult] = useState('Ready to save');
-  const [summarylist, setSummarylist] = useState('');
+  const [summarylist, setSummarylist] = useState([
+    'New York',
+    'Berlin',
+    'London',
+    'Paris',
+  ]);
 
   useEffect(() => {
     setResult("Let's get weather");
@@ -90,7 +95,20 @@ export default function Home() {
       <button onClick={() => handleSave(result)}>Save Button Here</button>
       <div>Save Result=========>{postresult}</div>
       <button onClick={() => getList()}>Get list Button Here</button>
-      <div>{summarylist}</div>
+      <div>{Record(summarylist)}</div>
+    </div>
+  );
+}
+
+function Record(record) {
+  return (
+    <div className="pl-6 pr-6">
+      <h2 className="border-b-2">Summaries record</h2>
+      <ul>
+        {record.map((summary) => (
+          <li>{summary}</li>
+        ))}
+      </ul>
     </div>
   );
 }
